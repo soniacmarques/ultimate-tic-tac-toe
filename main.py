@@ -1,6 +1,8 @@
 from functools import partial
 import tkinter as tk
-from itertools import cycle
+from itertools import cycle, product
+from tkinter import *
+from tkinter import messagebox
 
 class Player():
     def __init__(self, name:str, icon:str = "x"):
@@ -21,22 +23,27 @@ class SimpleGame():
 
         self.buttons = []
 
-        for x in range(3):
-            for y in range(3):
-                button = tk.Label(root, text="", width=3, font=("", 25), bd=1,
+        mainFrame = Frame(root)
+        mainFrame.pack()
+
+        for x, y in product(range(3), range(3)):
+            button = tk.Label(mainFrame, text="", width=6, height=3, font=("", 25), bd=1,
+                            relief="groove")
+
+            button.grid(row=x, column=y)
+
+            command = partial(self.move, button)
+            button.bind("<Button-1>", command)
+            self.buttons.append(button)
+        
+        bottomFrame = Frame(root)
+        bottomFrame.pack( side = RIGHT )
+
+
+        self.clear_button = tk.Label(bottomFrame, text="Clear screen", width=10, font=("", 10), bd=3,
                                 relief="groove")
-
-                button.grid(row=x, column=y)
-
-                command = partial(self.move, button)
-                button.bind("<Button-1>", command)
-                self.buttons.append(button)
-
-        self.clear_button = tk.Label(root, text="Clear screen", width=3, font=("", 15), bd=3,
-                                relief="groove")
-        self.clear_button.grid(row=4, column=0, columnspan=3, sticky="news")
-
-        self.clear_button.bind("<Button-1>", self.clear) # Left click
+        self.clear_button.pack()
+        self.clear_button.bind("<Button-1>", self.clear)
                 
 
     def move(self, button, event):
@@ -56,6 +63,8 @@ class SimpleGame():
         for player in self.players:
             won = self.won(player)
             print(player.name, "has won? ", won)
+            if won:
+                messagebox.showinfo("Congratulations!", f"{player.name} WON!") 
 
     def won(self, player):
         player.moves_idx.sort()
