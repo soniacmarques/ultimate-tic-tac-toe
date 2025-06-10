@@ -4,6 +4,9 @@ from itertools import cycle, product
 from tkinter import *
 from tkinter import messagebox
 
+DEFAULT_HIGHLIGHT_COLOR = "MediumPurple2"
+ACTIVE_HIGHLIGHT_COLOR = "SeaGreen2"
+
 class Player():
     def __init__(self, name:str, icon:str = "x"):
         self.name = name
@@ -13,29 +16,22 @@ class Player():
     def add_move(self, index):
         self.moves_idx.append(index)
 
-
-
-class SimpleGame():
+class UltimateGame():
     def __init__(self, root):
         self.players = [Player("sonia", "O"), Player("marcelo", "X")]
         self.players_cycle = cycle(self.players)
         self.current_player = next(self.players_cycle)
 
-        self.buttons = []
-
         mainFrame = Frame(root)
-        mainFrame.pack()
+        
+        mainFrame.pack( side = LEFT, pady=20, padx=20 )
+
+        self.simple_games = []
 
         for x, y in product(range(3), range(3)):
-            button = tk.Label(mainFrame, text="", width=6, height=3, font=("", 25), bd=1,
-                            relief="groove")
+            simple_game = SimpleGame(mainFrame, row=x, column=y, ultimate_game=self)
+            self.simple_games.append(simple_game)
 
-            button.grid(row=x, column=y)
-
-            command = partial(self.move, button)
-            button.bind("<Button-1>", command)
-            self.buttons.append(button)
-        
         bottomFrame = Frame(root)
         bottomFrame.pack( side = RIGHT )
 
@@ -44,6 +40,40 @@ class SimpleGame():
                                 relief="groove")
         self.clear_button.pack()
         self.clear_button.bind("<Button-1>", self.clear)
+
+    def clear(self, event):
+        for button in self.buttons:
+            button.config(text="")
+
+    def selectNextSimpleGame(self, button_idx):
+        self.simple_games[button_idx].mainFrame.configure(highlightbackground=ACTIVE_HIGHLIGHT_COLOR)
+
+
+
+
+class SimpleGame():
+    def __init__(self, root, row, column, ultimate_game):
+        self.players = [Player("sonia", "O"), Player("marcelo", "X")]
+        self.players_cycle = cycle(self.players)
+        self.current_player = next(self.players_cycle)
+        self.ultimate_game = ultimate_game
+
+        self.buttons = []
+
+        self.mainFrame = Frame(root, highlightbackground=DEFAULT_HIGHLIGHT_COLOR, highlightthickness=2)
+        self.mainFrame.grid(row=row, column=column, pady=1, padx=1)
+
+        for x, y in product(range(3), range(3)):
+            button = tk.Label(self.mainFrame, text="", width=3, height=1, font=("", 25), bd=1,
+                            relief="groove")
+
+            button.grid(row=x, column=y)
+
+            command = partial(self.move, button)
+            button.bind("<Button-1>", command)
+            self.buttons.append(button)
+        
+        
                 
 
     def move(self, button, event):
@@ -55,7 +85,8 @@ class SimpleGame():
             self.current_player.add_move(button_idx)
             self.check_game_status()
             self.current_player = next(self.players_cycle)
-        
+            self.ultimate_game.selectNextSimpleGame(button_idx)
+            self.mainFrame.configure(highlightbackground=DEFAULT_HIGHLIGHT_COLOR)
     
     def check_game_status(self):
         # TODO: check for wins and ties
@@ -96,13 +127,12 @@ class SimpleGame():
 
         return False
 
-    def clear(self, event):
-        for button in self.buttons:
-            button.config(text="")
 
 def main():
     root = tk.Tk()
-    SimpleGame(root)
+    root.title('Ultimate Tic Tac Toe')
+
+    UltimateGame(root)
     root.mainloop()
 
 if __name__ == "__main__":
