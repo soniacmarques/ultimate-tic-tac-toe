@@ -1,0 +1,32 @@
+version = 1
+revision = 2
+requires-python = ">=3.12"
+
+[[package]]
+name = "future"
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a7/b2/4140c69c6a66432916b26158687e821ba631a4c9273c474343badf84d3ba/future-1.0.0.tar.gz", hash = "sha256:bd2968309307861edae1458a4f8a4f3598c03be43b97521076aebf5d94c07b05", size = 1228490, upload-time = "2024-02-21T11:52:38.461Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/da/71/ae30dadffc90b9006d77af76b393cb9dfbfc9629f339fc1574a1c52e6806/future-1.0.0-py3-none-any.whl", hash = "sha256:929292d34f5872e70396626ef385ec22355a1fae8ad29e1a734c3e43f9fbc216", size = 491326, upload-time = "2024-02-21T11:52:35.956Z" },
+]
+
+[[package]]
+name = "tkintertable"
+version = "1.3.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "future" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d0/08/253fd5119bf9130769185f53de80dba14058a96b0e82a7f0efd89ea4e9e8/tkintertable-1.3.3.tar.gz", hash = "sha256:fc8f1a726be958e645eece74c6994514caffc1a87d7770183ea753262b870329", size = 58737, upload-time = "2021-05-06T11:12:04.377Z" }
+
+[[package]]
+name = "ultimate-tic-tac-toe"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "tkintertable" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "tkintertable", specifier = ">=1.3.3" }]
